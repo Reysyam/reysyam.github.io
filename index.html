@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kad Ucapan Birthday</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffb6c1, #ffe6e6);
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      overflow: hidden;
+      height: 100vh;
+      margin: 0;
+      padding: 0 10px;
+    }
+
+    .envelope {
+      width: 50vw;
+      max-width: 220px;
+      height: 120px;
+      background: #ff4081;
+      position: relative;
+      margin: 80px auto;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .envelope:hover {
+      transform: scale(1.05);
+    }
+
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-bottom: 60px solid #ff80ab;
+      transform-origin: top;
+      transition: transform 0.6s ease;
+    }
+
+    .message {
+      display: none;
+      font-size: 4vw;
+      color: #fff;
+      margin-top: 30px;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    .message img {
+      width: 60vw;
+      max-width: 250px;
+      height: auto;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border: 3px solid white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .falling-text {
+      position: fixed;
+      top: -50px;
+      font-size: 4vw;
+      color: #ff1493;
+      animation: fall 3s linear forwards;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    .countdown {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20vw;
+      color: #ff1493;
+      font-weight: bold;
+      display: none;
+      animation: pop 1s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+
+    /* Untuk skrin lebih besar (desktop) */
+    @media (min-width: 768px) {
+      .message {
+        font-size: 24px;
+      }
+      .falling-text {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Surat -->
+  <div class="envelope" onclick="openEnvelope()">
+    <div class="flap" id="flap"></div>
+  </div>
+
+  <!-- Countdown -->
+  <div class="countdown" id="countdown">3</div>
+
+  <!-- Ucapan -->
+  <div class="message" id="message">
+    🎂 <b>Happy Birthday Kakak Intan</b> 🎉<br>
+    Semoga panjang umur dan dimurahkan rezeki,<br>
+    jangan kuat maroh, muko koho tuo dh tu 😆💖
+    <br>
+    <img src="kakak.jpg" alt="Birthday Image">
+  </div>
+
+  <!-- Lagu -->
+  <audio id="birthdaySong" preload="auto">
+    <source src="Happy Birthday song SLOW version.mp3" type="audio/mpeg">
+    Browser anda tidak menyokong audio.
+  </audio>
+
+  <script>
+    let opened = false;
+
+    function openEnvelope() {
+      if (!opened) {
+        document.getElementById('flap').style.transform = 'rotateX(180deg)';
+        setTimeout(() => startCountdown(), 700);
+        opened = true;
+      }
+    }
+
+    function startCountdown() {
+      const countdown = document.getElementById('countdown');
+      const song = document.getElementById('birthdaySong');
+      let count = 3;
+      countdown.style.display = 'block';
+      countdown.textContent = count;
+
+      song.play().catch(() => {
+        alert("Klik semula surat jika muzik tidak dimainkan (sekatan autoplay).");
+      });
+
+      const timer = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdown.textContent = count;
+          countdown.style.animation = 'none';
+          countdown.offsetHeight; // reset animation
+          countdown.style.animation = 'pop 1s ease';
+        } else {
+          clearInterval(timer);
+          countdown.style.display = 'none';
+          showMessage();
+        }
+      }, 1000);
+    }
+
+    function showMessage() {
+      document.getElementById('message').style.display = 'block';
+      startFallingText();
+    }
+
+    function startFallingText() {
+      setInterval(() => {
+        const text = document.createElement('div');
+        text.classList.add('falling-text');
+        text.textContent = '🎉 Birthday Girl 💕';
+        text.style.left = Math.random() * window.innerWidth + 'px';
+        text.style.fontSize = (16 + Math.random() * 12) + 'px';
+        document.body.appendChild(text);
+
+        setTimeout(() => text.remove(), 3000);
+      }, 300);
+    }
+  </script>
+
+</body>
+</html>
